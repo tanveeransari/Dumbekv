@@ -20,22 +20,25 @@ namespace CashiersLib
             }
         }
 
-        public SortedSet<Cashier> Cashiers
-        {
-            get
-            {
-                return _cashiers;
-            }
-        }
+        public SortedSet<Cashier> Cashiers { get { return _cashiers; } }
 
         public int GetCompletionTime()
         {
-            throw new System.NotImplementedException();
+            //Must calculate max completiontime
+            int completionTime = 0;
+            foreach (var cshr in _cashiers)
+            {
+                completionTime = Math.Max(0, cshr.GetFinalCompletionTime());
+            }
+            return completionTime;
         }
 
         public bool EnqueueCustomer(ICustomer customer)
         {
             throw new System.NotImplementedException();
+            //needs to decide which customer to ask to choose first
+
+            //for each customer in orderedcustomerschoose
         }
     }
 }

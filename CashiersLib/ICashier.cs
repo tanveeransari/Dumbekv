@@ -7,11 +7,14 @@ namespace CashiersLib
     {
         int Id { get; }
         bool IsTrainee { get; }
-        int GetLineLength();
-        int GetCompletionTime();
-        List<ICustomer> GetCustomersInLine();
-        /// <summary></summary>
-        /// <returns>New Completion Time</returns>
+        
+        // returns New Completion Time 
         int EnqueueCustomer(ICustomer customer);
+        
+        int GetFinalCompletionTime();
+        int GetLineLength(int minute);
+        int GetNumberOfCustomersInLine(int minute);
+        //List<ICustomer> GetCustomersInLine();
+
     }
 }

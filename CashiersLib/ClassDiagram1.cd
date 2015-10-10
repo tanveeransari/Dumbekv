@@ -1,10 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Class Name="CashiersLib.Cashier">
-    <Position X="6.25" Y="3" Width="1.5" />
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
+  <Class Name="CashiersLib.Cashier" BaseTypeListCollapsed="true">
+    <Position X="8.25" Y="4.75" Width="2.5" />
     <Members>
       <Field Name="_id" Hidden="true" />
       <Field Name="_isTrainee" Hidden="true" />
+      <Method Name="Cashier" Hidden="true" />
+      <Method Name="EnqueueCustomer" Hidden="true" />
+      <Method Name="GetCompletionTime" Hidden="true" />
+      <Method Name="GetCustomersInLine" Hidden="true" />
+      <Method Name="GetLineLength" Hidden="true" />
+      <Property Name="Id" Hidden="true" />
+      <Property Name="IsTrainee" Hidden="true" />
     </Members>
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
@@ -13,10 +20,10 @@
       <HashCode>AACCAQAAAABAAAQAAABAAAAAAAAAAAAAACAAAABEAAA=</HashCode>
       <FileName>Cashier.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" />
+    <Lollipop Position="0.2" Collapsed="true" />
   </Class>
-  <Class Name="CashiersLib.Store">
-    <Position X="6.25" Y="0.5" Width="1.75" />
+  <Class Name="CashiersLib.Store" BaseTypeListCollapsed="true">
+    <Position X="0.5" Y="0.5" Width="2.25" />
     <Members>
       <Field Name="_cashiers" Hidden="true" />
     </Members>
@@ -27,35 +34,49 @@
       <HashCode>AEAAAAAAAABAAAAAAAAAAAAAAAAAAAAAACAAAQAAAAA=</HashCode>
       <FileName>Store.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" />
+    <Lollipop Position="0.2" Collapsed="true" />
   </Class>
   <Class Name="CashiersLib.Customer">
-    <Position X="2.75" Y="2.75" Width="1.5" />
+    <Position X="4.75" Y="3" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>AgACAAAAAAAEAAAQAAAAEAAQAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>CustomerA.cs</FileName>
+      <HashCode>AgACAAAAAAAEAAAQAABAEAAUAAAAAAAAAAAAAAAAABA=</HashCode>
+      <FileName>Customer.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Interface Name="CashiersLib.ICustomer">
-    <Position X="0.5" Y="0.5" Width="1.5" />
+  <Class Name="CashiersLib.CustomerA" Collapsed="true">
+    <Position X="3.5" Y="7" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AgACAAAAAAAEAAAAAAAAEAAQAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>ICustomer.cs</FileName>
+      <HashCode>AgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Customer.cs</FileName>
     </TypeIdentifier>
-  </Interface>
+  </Class>
+  <Class Name="CashiersLib.CustomerB" Collapsed="true">
+    <Position X="5.75" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Customer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
   <Interface Name="CashiersLib.ICashier">
-    <Position X="0.5" Y="2.75" Width="1.75" />
+    <Position X="8.25" Y="1.75" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AACCAQAAAABAAAAAAAAAAAAAAAAAAAAAACAAAAAEAAA=</HashCode>
       <FileName>ICashier.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="CashiersLib.IStore">
-    <Position X="3.75" Y="0.5" Width="1.5" />
+    <Position X="10.5" Y="0.75" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AEAAAAAAAABAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAA=</HashCode>
       <FileName>IStore.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="CashiersLib.ICustomer">
+    <Position X="4.5" Y="0.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AgACAAAAAAAEAAAAAAAAEAAQAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ICustomer.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Font Name="Segoe UI" Size="9" />

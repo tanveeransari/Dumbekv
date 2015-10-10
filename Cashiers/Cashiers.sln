@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+# Visual Studio 2013
+VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cashiers", "Cashiers.csproj", "{BD12FD84-A522-4532-9B77-C58DACC91560}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CashiersLib", "..\CashiersLib\CashiersLib.csproj", "{535803D9-E878-418C-A21E-C1D7A0FA9BC0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CashierTests", "..\CashierTests\CashierTests.csproj", "{05BB50E9-9CB6-44D0-8D13-D770A8AF7BB2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{535803D9-E878-418C-A21E-C1D7A0FA9BC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{535803D9-E878-418C-A21E-C1D7A0FA9BC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{535803D9-E878-418C-A21E-C1D7A0FA9BC0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{05BB50E9-9CB6-44D0-8D13-D770A8AF7BB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05BB50E9-9CB6-44D0-8D13-D770A8AF7BB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05BB50E9-9CB6-44D0-8D13-D770A8AF7BB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05BB50E9-9CB6-44D0-8D13-D770A8AF7BB2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

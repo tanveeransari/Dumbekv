@@ -10,11 +10,14 @@ namespace CashiersLib
     {
         private readonly bool _isTrainee;
         private readonly int _id;
+        private List<ICustomer> _customersToServe;
+
 
         public Cashier(int id, bool isTrainee)
         {
             _id = id;
             _isTrainee = isTrainee;
+            _customersToServe = new List<ICustomer>();
         }
 
         public bool IsTrainee
@@ -33,29 +36,39 @@ namespace CashiersLib
             }
         }
 
-        public int GetLineLength()
+        public int GetFinalCompletionTime()
         {
             throw new NotImplementedException();
         }
 
-        public int GetCompletionTime()
-        {
-            throw new NotImplementedException();
-        }
-
-        public List<ICustomer> GetCustomersInLine()
-        {
-            throw new NotImplementedException();
-        }
-
+        //Returns new completion time
         public int EnqueueCustomer(ICustomer customer)
+        {
+            _customersToServe.Add(customer);
+            return calculateCurrentCompletionTime(customer.ArrivalTime);
+        }
+
+        private int calculateCurrentCompletionTime(int currentTime)
+        {
+            //customers whose items are done have to be removed
+            //customers in process have some items removed and some left
+            //customers waiting have all items left
+            throw new NotImplementedException();
+        }
+
+        public int GetLineLength(int minute)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int GetNumberOfCustomersInLine(int minute)
         {
             throw new NotImplementedException();
         }
 
         public int CompareTo(ICashier other)
         {
-            throw new NotImplementedException();
+            return Id.CompareTo(other.Id);
         }
     }
 }
