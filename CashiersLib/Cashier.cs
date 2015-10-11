@@ -12,6 +12,7 @@ namespace CashiersLib
         private readonly int _id;
         private List<ICustomer> _customersToServe;
 
+        private int _currentMinute = 0;
 
         public Cashier(int id, bool isTrainee)
         {
@@ -44,8 +45,23 @@ namespace CashiersLib
         //Returns new completion time
         public int EnqueueCustomer(ICustomer customer)
         {
-            _customersToServe.Add(customer);
+            lock (_customersToServe)
+            {
+                _customersToServe.Add(customer);
+                if (customer.ArrivalTime != _currentMinute)
+                {
+                    moveForwardMinutes(customer.ArrivalTime - _currentMinute);
+                }
+            }
+
             return calculateCurrentCompletionTime(customer.ArrivalTime);
+        }
+
+        private void moveForwardMinutes(int numMinutes)
+        {
+
+
+            _currentMinute += numMinutes;
         }
 
         private int calculateCurrentCompletionTime(int currentTime)
