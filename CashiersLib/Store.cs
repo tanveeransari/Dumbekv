@@ -14,31 +14,75 @@ namespace CashiersLib
         {
             Debug.Assert(cashierCount > 0, "Invalid number of cashiers specified. Must be greater than zero");
             _cashiers = new SortedSet<Cashier>();
-            for (int i = 0; i < cashierCount; i++)
+            for (int i = 0; i < cashierCount-1; i++)
             {
-                _cashiers.Add(new Cashier(i, i == cashierCount - 1));
+                _cashiers.Add(new Cashier(i));
             }
+            _cashiers.Add(new TraineeCashier(cashierCount-1));
+
         }
 
-        public SortedSet<Cashier> Cashiers { get { return _cashiers; } }
-
-        public int GetCompletionTime()
+        public SortedSet<Cashier> Cashiers
         {
-            //Must calculate max completiontime
-            int completionTime = 0;
-            foreach (var cshr in _cashiers)
-            {
-                completionTime = Math.Max(0, cshr.GetFinalCompletionTime());
-            }
-            return completionTime;
+            get { return _cashiers; }
         }
 
-        public bool EnqueueCustomer(ICustomer customer)
+        public int CompletionTime
         {
-            throw new System.NotImplementedException();
-            //needs to decide which customer to ask to choose first
+            get { return _latestCompletionTime; }
+        }
+
+        private int _latestCompletionTime;
+        public bool EnqueueCustomers(List<Customer> customers)
+        {
+            if (customers == null || customers.Count == 0) return false;
+            
+            customers = customers.OrderBy(x => x.ArrivalTime).ToList();
+            int currMinute = customers.First().ArrivalTime;
+
+            var customersInSameMinute = new SortedSet<Customer>();
+            foreach (var customer in customers)
+            {
+                if (customer.ArrivalTime == currMinute)
+                {
+                    customersInSameMinute.Add(customer);
+                }
+                else
+                {
+                    //Customer sort takes care of which customer gets to choose first
+                    foreach (var c in customersInSameMinute)
+                    {
+                        EnqueueCustomer(c);
+                    }
+                    customersInSameMinute.Clear();
+
+                    customersInSameMinute.Add(customer);
+                    currMinute = customer.ArrivalTime;
+                }
+            }
+
+            foreach (var c in customersInSameMinute)
+            {
+                EnqueueCustomer(c);
+            }
 
             //for each customer in orderedcustomerschoose
+
+            return true;
         }
+
+        private bool EnqueueCustomer(ICustomer customer)
+        {
+            ICashier selectedCashier = customer.ChooseCashier(_cashiers);
+            if (selectedCashier == null) return false;
+
+            int cashierNewCompletionTime = selectedCashier.EnqueueCustomer(customer);
+            if (cashierNewCompletionTime > _latestCompletionTime)
+            {
+                _latestCompletionTime = cashierNewCompletionTime;
+            }
+            return true;
+        }
+
     }
 }

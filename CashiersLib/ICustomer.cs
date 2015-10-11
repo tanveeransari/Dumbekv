@@ -5,10 +5,10 @@ using System.Text;
 
 namespace CashiersLib
 {
-    public interface ICustomer:IComparable<ICustomer>
+    public interface ICustomer:IComparable<ICustomer>, IComparer<ICustomer>
     {
         int ArrivalTime { get;}
-        int CartCount { get;}
+        int CartCount { get; set;}
         CustomerType CustomerType { get; }
         int Id { get;}
 

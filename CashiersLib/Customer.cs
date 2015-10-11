@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -58,49 +57,19 @@ namespace CashiersLib
 
         public abstract ICashier ChooseCashier(SortedSet<Cashier> cashiers);
 
-        #region IComparable<ICustomer> Members
-
+        
         public int CompareTo(ICustomer other)
         {
             //those with fewer items choose registers before those with more, and if they have the same number of items then type A's choose before type B's.
-            if (CartCount != other.CartCount)
-            {
-                return _cartCount.CompareTo(other.CartCount);
-            }
-            else
-            {
-                return this.CustomerType.CompareTo(other.CustomerType);
-            }
+            return Compare(this, other);
         }
 
-        #endregion
-    }
-
-    public class CustomerA : Customer
-    {
-        public CustomerA(int arrivalTime, int cartCount)
-            : base(arrivalTime, cartCount)
-        { }
-        public override CustomerType CustomerType { get { return CashiersLib.CustomerType.A; } }
-
-        public override ICashier ChooseCashier(SortedSet<Cashier> cashiers)
+        
+        public int Compare(ICustomer x, ICustomer y)
         {
-            //var shortestLines = from c in cashiers orderby c.GetLineLength select c;
-            throw new NotImplementedException();
-        }
-    }
+            if (x.CartCount != y.CartCount) return x.CartCount.CompareTo(y.CartCount);
 
-    public class CustomerB : Customer
-    {
-        public CustomerB(int arrivalTime, int cartCount)
-            : base(arrivalTime, cartCount)
-        { }
-
-        public override CustomerType CustomerType { get { return CashiersLib.CustomerType.B; } }
-
-        public override ICashier ChooseCashier(SortedSet<Cashier> cashiers)
-        {
-            throw new NotImplementedException();
+            return x.CustomerType.CompareTo(y.CustomerType);
         }
     }
 }

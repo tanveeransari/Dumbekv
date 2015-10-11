@@ -6,8 +6,8 @@ namespace CashiersLib
     {
         SortedSet<Cashier> Cashiers { get; }
 
-        bool EnqueueCustomer(ICustomer customer);
+        bool EnqueueCustomers(List<Customer> customers);
 
-        int GetCompletionTime();
+        int CompletionTime { get; }
     }
 }

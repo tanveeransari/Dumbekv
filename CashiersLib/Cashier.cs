@@ -8,26 +8,18 @@ namespace CashiersLib
 {
     public class Cashier : ICashier
     {
-        private readonly bool _isTrainee;
         private readonly int _id;
-        private List<ICustomer> _customersToServe;
+        private Queue<ICustomer> _customersToServe;
+        private readonly double _rateOfWork;
 
         private int _currentMinute = 0;
 
-        public Cashier(int id, bool isTrainee)
+        public Cashier(int id)
         {
             _id = id;
-            _isTrainee = isTrainee;
-            _customersToServe = new List<ICustomer>();
+            _customersToServe = new Queue<ICustomer>();
         }
 
-        public bool IsTrainee
-        {
-            get
-            {
-                return _isTrainee;
-            }
-        }
 
         public int Id
         {
@@ -37,34 +29,42 @@ namespace CashiersLib
             }
         }
 
-        public int GetFinalCompletionTime()
-        {
-            throw new NotImplementedException();
-        }
-
         //Returns new completion time
         public int EnqueueCustomer(ICustomer customer)
         {
             lock (_customersToServe)
             {
-                _customersToServe.Add(customer);
+                _customersToServe.Enqueue(customer);
                 if (customer.ArrivalTime != _currentMinute)
                 {
-                    moveForwardMinutes(customer.ArrivalTime - _currentMinute);
+                    MoveTimeForward(customer.ArrivalTime - _currentMinute);
                 }
             }
 
             return calculateCurrentCompletionTime(customer.ArrivalTime);
         }
 
-        private void moveForwardMinutes(int numMinutes)
+        protected virtual void MoveTimeForward(int numMinutes)
         {
-
-
+            for (int i = 0; i < _customersToServe.Count ; i++)
+            {
+                var customer = _customersToServe.Peek();
+                int customerProcessingTime = customer.CartCount;
+                if (customer.CartCount <= numMinutes)
+                {
+                    _customersToServe.Dequeue();
+                }
+                else
+                {
+                    customer.CartCount -= numMinutes;
+                    //TODO: What about trainees
+                    break;
+                }
+            }
             _currentMinute += numMinutes;
         }
 
-        private int calculateCurrentCompletionTime(int currentTime)
+        protected virtual int calculateCurrentCompletionTime(int currentTime)
         {
             //customers whose items are done have to be removed
             //customers in process have some items removed and some left
@@ -85,6 +85,30 @@ namespace CashiersLib
         public int CompareTo(ICashier other)
         {
             return Id.CompareTo(other.Id);
+        }
+
+        public int GetLastCustomerCartCount()
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class TraineeCashier:Cashier
+    {
+        public TraineeCashier(int id):base(id)
+        {
+           
+        }
+
+        protected override void MoveTimeForward(int numMinutes)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override int calculateCurrentCompletionTime(int currentTime)
+        {
+            throw new NotImplementedException();
+            return 2 * base.calculateCurrentCompletionTime(currentTime);
         }
     }
 }
