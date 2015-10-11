@@ -17,7 +17,7 @@ namespace CashiersLib
             int minLineLength = int.MaxValue;
             foreach (var cashier in cashiers)
             {
-                int cashierLineLength = cashier.GetLineLength(ArrivalTime);
+                int cashierLineLength = cashier.UpdateAndGetQueueLength(ArrivalTime);
                 if (cashierLineLength < minLineLength)
                 {
                     minLineLength = cashierLineLength;

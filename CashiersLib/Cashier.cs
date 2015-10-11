@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CashiersLib
@@ -9,15 +11,16 @@ namespace CashiersLib
     public class Cashier : ICashier
     {
         private readonly int _id;
-        private Queue<ICustomer> _customersToServe;
-        private readonly double _rateOfWork;
 
-        private int _currentMinute = 0;
+        protected readonly LinkedList<ICustomer> _customersToServe;
+        protected int _numCustomers = 0;
+
+        private int _lastArrivalMinute = 0;
 
         public Cashier(int id)
         {
             _id = id;
-            _customersToServe = new Queue<ICustomer>();
+            _customersToServe = new LinkedList<ICustomer>();
         }
 
 
@@ -32,83 +35,88 @@ namespace CashiersLib
         //Returns new completion time
         public int EnqueueCustomer(ICustomer customer)
         {
-            lock (_customersToServe)
+            _customersToServe.AddLast(customer);
+            _numCustomers++;
+            if (customer.ArrivalTime != _lastArrivalMinute)
             {
-                _customersToServe.Enqueue(customer);
-                if (customer.ArrivalTime != _currentMinute)
-                {
-                    MoveTimeForward(customer.ArrivalTime - _currentMinute);
-                }
+                MoveTimeForward(customer.ArrivalTime - _lastArrivalMinute);
             }
 
-            return calculateCurrentCompletionTime(customer.ArrivalTime);
+            return CalculateCurrentCompletionTime(customer.ArrivalTime);
         }
 
         protected virtual void MoveTimeForward(int numMinutes)
         {
-            for (int i = 0; i < _customersToServe.Count ; i++)
+            int remainingMinutes = numMinutes;
+            while (_customersToServe.First != null)
             {
-                var customer = _customersToServe.Peek();
-                int customerProcessingTime = customer.CartCount;
-                if (customer.CartCount <= numMinutes)
+                var cust = _customersToServe.First.Value;
+                if (cust.CartCount < remainingMinutes)
                 {
-                    _customersToServe.Dequeue();
+                    //customers whose items are done have to be removed
+                    remainingMinutes -= cust.CartCount;
+                    _customersToServe.RemoveFirst();
+                    _numCustomers--;
                 }
                 else
                 {
-                    customer.CartCount -= numMinutes;
-                    //TODO: What about trainees
+                    //customers in process have some items removed and some left
+                    cust.CartCount -= remainingMinutes;
+                    remainingMinutes -= cust.CartCount;
+                    Debug.Assert(remainingMinutes == 0, "Remaining minutes are still left !");
+                    //Ignore remaining customers
                     break;
                 }
+                Debug.Assert(remainingMinutes >= 0, "Remaining minutes went negative !");
             }
-            _currentMinute += numMinutes;
+
+            _lastArrivalMinute += numMinutes;
         }
 
-        protected virtual int calculateCurrentCompletionTime(int currentTime)
+        protected virtual int CalculateCurrentCompletionTime(int currentTime)
         {
-            //customers whose items are done have to be removed
-            //customers in process have some items removed and some left
-            //customers waiting have all items left
-            throw new NotImplementedException();
+            int remainingTime = 0;
+            foreach (ICustomer customer in _customersToServe)
+            {
+                remainingTime += customer.CartCount;
+            }
+
+            return remainingTime;
         }
 
-        public int GetLineLength(int minute)
+        public int UpdateAndGetQueueLength(int minute)
         {
-            throw new NotImplementedException();
+            if (minute > _lastArrivalMinute)
+            {
+                MoveTimeForward(minute - _lastArrivalMinute);
+            }
+            else if (minute < _lastArrivalMinute) throw new Exception("Moving time backwards in UpdateAndGetQueueLength!");
+
+            return GetLineLength();         
         }
 
-        public int GetNumberOfCustomersInLine(int minute)
+        private int GetLineLength()
         {
-            throw new NotImplementedException();
-        }
-
-        public int CompareTo(ICashier other)
-        {
-            return Id.CompareTo(other.Id);
+            return _numCustomers;
         }
 
         public int GetLastCustomerCartCount()
         {
-            throw new NotImplementedException();
-        }
-    }
-
-    public class TraineeCashier:Cashier
-    {
-        public TraineeCashier(int id):base(id)
-        {
-           
+            if (_customersToServe.Count == 0) return 0;
+            return _customersToServe.Last.Value.CartCount;
         }
 
-        protected override void MoveTimeForward(int numMinutes)
+        #region IComparable, IComparer
+        //sorts by queue/cashier id
+        public int CompareTo(ICashier other)
         {
-            throw new NotImplementedException();
+            return Compare(this, other);
         }
 
-        protected override int calculateCurrentCompletionTime(int currentTime)
+        public int Compare(ICashier x, ICashier y)
         {
-            throw new NotImplementedException();
-            return 2 * base.calculateCurrentCompletionTime(currentTime);
+            return x.Id.CompareTo(y.Id);
         }
+        #endregion
     }
 }

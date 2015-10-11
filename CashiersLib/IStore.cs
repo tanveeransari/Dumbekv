@@ -4,10 +4,8 @@ namespace CashiersLib
 {
     public interface IStore
     {
-        SortedSet<Cashier> Cashiers { get; }
+        ISet<Cashier> Cashiers { get; }
 
-        bool EnqueueCustomers(List<Customer> customers);
-
-        int CompletionTime { get; }
+        int EnqueueCustomers(List<ICustomer> customers);
     }
 }

@@ -17,7 +17,7 @@ namespace CashiersLib
             Cashier selectedCashier = null;
             foreach (var cashier in cashiers)
             {
-                if (cashier.GetLineLength(ArrivalTime) == 0) return cashier;
+                if (cashier.UpdateAndGetQueueLength(ArrivalTime) == 0) return cashier;
                 int cartCount = cashier.GetLastCustomerCartCount();
                 if (cartCount < minCustomerCartCount)
                 {

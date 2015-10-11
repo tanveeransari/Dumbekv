@@ -9,66 +9,63 @@ namespace CashiersLib
     public class Store : IStore
     {
         private readonly SortedSet<Cashier> _cashiers;
-
+        private int _latestCompletionTime;  //The answer to the big question
+        private int _currentClockTime = 0;      // what minute are we in
         public Store(int cashierCount)
         {
             Debug.Assert(cashierCount > 0, "Invalid number of cashiers specified. Must be greater than zero");
             _cashiers = new SortedSet<Cashier>();
-            for (int i = 0; i < cashierCount-1; i++)
+            for (int i = 0; i < cashierCount - 1; i++)
             {
                 _cashiers.Add(new Cashier(i));
             }
-            _cashiers.Add(new TraineeCashier(cashierCount-1));
-
+            _cashiers.Add(new CashierTrainee(cashierCount - 1));
         }
 
-        public SortedSet<Cashier> Cashiers
+        public ISet<Cashier> Cashiers
         {
             get { return _cashiers; }
         }
 
-        public int CompletionTime
+        //returns time all customers are done processing
+        public int EnqueueCustomers(List<ICustomer> custList)
         {
-            get { return _latestCompletionTime; }
-        }
+            if (custList == null || custList.Count == 0) return 0;
 
-        private int _latestCompletionTime;
-        public bool EnqueueCustomers(List<Customer> customers)
-        {
-            if (customers == null || customers.Count == 0) return false;
-            
-            customers = customers.OrderBy(x => x.ArrivalTime).ToList();
-            int currMinute = customers.First().ArrivalTime;
+            int minuteIter = 0;
+            var custByMinute = new SortedSet<ICustomer>();
 
-            var customersInSameMinute = new SortedSet<Customer>();
+            var customers = custList.OrderBy(x => x.ArrivalTime).ToList();
             foreach (var customer in customers)
             {
-                if (customer.ArrivalTime == currMinute)
+                if (customer.ArrivalTime == minuteIter)
                 {
-                    customersInSameMinute.Add(customer);
+                    custByMinute.Add(customer);
                 }
                 else
                 {
                     //Customer sort takes care of which customer gets to choose first
-                    foreach (var c in customersInSameMinute)
+                    foreach (var c in custByMinute)
                     {
                         EnqueueCustomer(c);
                     }
-                    customersInSameMinute.Clear();
+                    custByMinute.Clear();
 
-                    customersInSameMinute.Add(customer);
-                    currMinute = customer.ArrivalTime;
+                    custByMinute.Add(customer);
+                    minuteIter = customer.ArrivalTime;
                 }
             }
-
-            foreach (var c in customersInSameMinute)
+            
+            //Handle last minute customers
+            foreach (var c in custByMinute)
             {
                 EnqueueCustomer(c);
             }
 
-            //for each customer in orderedcustomerschoose
+            Debug.WriteLine("Last customer arrived at {0} = currentClockTime. Latest Completion Time {1}",
+                _currentClockTime, _latestCompletionTime);
 
-            return true;
+            return _currentClockTime + _latestCompletionTime;
         }
 
         private bool EnqueueCustomer(ICustomer customer)

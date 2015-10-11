@@ -6,8 +6,11 @@ CashierTests -	unit tests for CashiersLib
 
 Assumptions
 ==================
-Desirable attributes are readability/maintainability and object oriented design and testability. 
-I would have done this differently if performance was the objective.
+Desirable attributes are readability/maintainability, object oriented design and testability. 
+I would have done this differently if performance was one of the objectives.
 
-Class variable naming with an underscore prefix is okay, as is not the "this." prefix for all class members.
-This is only one of several possible coding conventions.
+Thread-safety is assumed not to be required since all my file reading is not multithreaded.
+So synchronization, volatile, atomic operations which would have been used in a multithreaded scenario have 
+not been used delibarately. 
+
+Coding Style : naming class members with an underscore prefix is assumed okay, instead of using "this."
