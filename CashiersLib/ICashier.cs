@@ -12,7 +12,7 @@ namespace CashiersLib
 
         int RateOfWork { get; }
 
-        int UpdateAndGetQueueLength(int minute);
+        int CalculateQueueLength(int minute);
 
         int GetLastCustomerCartCount();
     }

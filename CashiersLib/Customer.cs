@@ -81,7 +81,7 @@ namespace CashiersLib
 
         public override string ToString()
         {
-            return string.Format("{0}: Type {1} Time:{2} Cart:{3}",
+            return string.Format("Time:{2} {1} ID:{0} Cart:{3}",
                 _id, CustomerType, ArrivalTime, CartCount);
         }
     }

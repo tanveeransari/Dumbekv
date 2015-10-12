@@ -9,17 +9,20 @@ namespace CashiersLib
     public class Store : IStore
     {
         private readonly SortedSet<ICashier> _cashiers;
-        private int _latestCompletionTime;  //The answer to the big question
+
+        private int _maxProcessingTimeFromStart;  //The answer to the big question
+
         private int _currentClockTime = 0;      // what minute are we in
         public Store(int cashierCount)
         {
             Debug.Assert(cashierCount > 0, "Invalid number of cashiers specified. Must be greater than zero");
+            CashierIDGenerator.Reset();
             _cashiers = new SortedSet<ICashier>();
             for (int i = 0; i < cashierCount - 1; i++)
             {
-                _cashiers.Add(new Cashier(i));
+                _cashiers.Add(new Cashier(CashierIDGenerator.NextCashierID));
             }
-            _cashiers.Add(new CashierTrainee(cashierCount - 1));
+            _cashiers.Add(new CashierTrainee(CashierIDGenerator.NextCashierID));
         }
 
         public ISet<ICashier> Cashiers
@@ -44,7 +47,7 @@ namespace CashiersLib
                 }
                 else
                 {
-                    //Customer sort takes care of which customer gets to choose first
+                    //Customer Sort handles customer arbitration for simultaneous arrivals
                     foreach (var c in custByMinute)
                     {
                         EnqueueCustomer(c);
@@ -56,7 +59,7 @@ namespace CashiersLib
                 }
                 _currentClockTime = customer.ArrivalTime;
             }
-            
+
             //Handle last minute customers
             foreach (var c in custByMinute)
             {
@@ -64,9 +67,9 @@ namespace CashiersLib
             }
 
             Debug.WriteLine("Last customer arrived at {0} = currentClockTime. Latest Completion Time {1}",
-                _currentClockTime, _latestCompletionTime);
+                _currentClockTime, _maxProcessingTimeFromStart);
 
-            return _currentClockTime + _latestCompletionTime;
+            return _maxProcessingTimeFromStart;
         }
 
         private bool EnqueueCustomer(Customer customer)
@@ -74,13 +77,36 @@ namespace CashiersLib
             ICashier selectedCashier = customer.ChooseCashier(_cashiers);
             if (selectedCashier == null) return false;
 
-            int cashierNewCompletionTime = selectedCashier.EnqueueCustomer(customer);
-            if (cashierNewCompletionTime > _latestCompletionTime)
+            int cashierRemainingProcessingTime = selectedCashier.EnqueueCustomer(customer);
+            if (_maxProcessingTimeFromStart == 0)
             {
-                _latestCompletionTime = cashierNewCompletionTime;
+                _maxProcessingTimeFromStart = customer.ArrivalTime + cashierRemainingProcessingTime;
+            }
+            else
+            {
+                if ((customer.ArrivalTime + cashierRemainingProcessingTime) > _maxProcessingTimeFromStart)
+                {
+                    _maxProcessingTimeFromStart = customer.ArrivalTime + cashierRemainingProcessingTime;
+                }
             }
             return true;
         }
 
+        static class CashierIDGenerator
+        {
+            private static int _cashierIDCtr = 0;
+            internal static int NextCashierID
+            {
+                get
+                {
+                    return ++_cashierIDCtr;
+                }
+            }
+
+            internal static void Reset()
+            {
+                _cashierIDCtr = 0;
+            }
+        }
     }
 }

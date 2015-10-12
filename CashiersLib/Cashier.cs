@@ -1,16 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace CashiersLib
 {
     public class Cashier : ICashier
     {
-
         private readonly int _id;
         private readonly LinkedList<Customer> _customersToServe;
         private int _numCustomers = 0;
@@ -58,22 +53,19 @@ namespace CashiersLib
                     _customersToServe.RemoveFirst();
                     remainingMinutes -= cust.WorkUnits / RateOfWork;
                     _numCustomers--;
+                    Debug.WriteLine("Remaining minutes {0}", remainingMinutes);
                 }
                 else
                 {
                     //customers partially processed have some items remaining
                     int workDoneInRemainingMinutes = RateOfWork * remainingMinutes;
-                    remainingMinutes -= cust.WorkUnits / RateOfWork;
+                    //                    remainingMinutes -= cust.WorkUnits / RateOfWork;
+                    remainingMinutes = 0;
                     cust.WorkUnits -= workDoneInRemainingMinutes;
-                    if (remainingMinutes > 0)
-                    {
-                        Debugger.Break();
-                    }
-
                     Debug.Assert(remainingMinutes <= 0, "Remaining minutes are still left !");
+                    Debug.WriteLine("Remaining minutes {0}", remainingMinutes);
                     break;
                 }
-                Debug.WriteLine("Remaining minutes {0}", remainingMinutes);
                 //Debug.Assert(remainingMinutes >= 0, "Remaining minutes went negative !");
             }
 
@@ -91,13 +83,16 @@ namespace CashiersLib
             return remainingTime;
         }
 
-        public int UpdateAndGetQueueLength(int minute)
+        public int CalculateQueueLength(int minute)
         {
             if (minute > _lastArrivalMinute)
             {
                 MoveClockForward(minute - _lastArrivalMinute);
             }
-            else if (minute < _lastArrivalMinute) throw new Exception("Moving time backwards in UpdateAndGetQueueLength!");
+            else if (minute < _lastArrivalMinute)
+            {
+                throw new InvalidOperationException("Cannot move time backwards in UpdateAndGetQueueLength!");
+            }
 
             return GetLineLength();
         }
@@ -128,7 +123,7 @@ namespace CashiersLib
 
         public override string ToString()
         {
-            return string.Format("{0} Customers:{1} LastArrival:{2}", _id, _numCustomers, _lastArrivalMinute);
+            return string.Format("ID:{0} Customers:{1} LastArrival:{2}", _id, _numCustomers, _lastArrivalMinute);
         }
     }
 }

@@ -41,13 +41,13 @@ namespace CashierTests
             cashier.EnqueueCustomer(new CustomerA(0, 10));
             cashier.EnqueueCustomer(new CustomerA(2, 5));
             cashier.EnqueueCustomer(new CustomerB(2, 3));
-            int lineLength = cashier.UpdateAndGetQueueLength(2);
+            int lineLength = cashier.CalculateQueueLength(2);
             Assert.AreEqual(3, lineLength);
 
-            lineLength = cashier.UpdateAndGetQueueLength(25);
+            lineLength = cashier.CalculateQueueLength(25);
             Assert.AreNotEqual(0, lineLength);
 
-            lineLength = cashier.UpdateAndGetQueueLength(36);
+            lineLength = cashier.CalculateQueueLength(36);
             Assert.AreEqual(0, lineLength);
         }
 

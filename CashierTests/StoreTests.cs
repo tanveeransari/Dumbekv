@@ -20,30 +20,6 @@ A 2 1";
             Assert.AreEqual(7, completionTime);
         }
 
-        private int processFile(string testFile)
-        {
-            if (string.IsNullOrWhiteSpace(testFile))
-            {
-                return 0;
-            }
-
-            int numCashier;
-            var customers = new List<Customer>();
-            using (var s = new StringReader(testFile))
-            {
-                numCashier = int.Parse(s.ReadLine());
-                string custLine;
-                while ((custLine = s.ReadLine()) != null)
-                {
-                    Customer cust = CustomerFactory.CreateCustomer(custLine);
-                    if (cust != null) customers.Add(cust);
-                }
-            }
-
-            var store = new Store(numCashier);
-            return store.EnqueueCustomers(customers);
-        }
-
         [TestMethod]
         public void Test2()
         {
@@ -92,6 +68,29 @@ B 4 1
 A 4 1";
             int completionTime = processFile(testFile);
             Assert.AreEqual(11, completionTime);
+        }
+        private int processFile(string testFile)
+        {
+            if (string.IsNullOrWhiteSpace(testFile))
+            {
+                return 0;
+            }
+
+            int numCashier;
+            var customers = new List<Customer>();
+            using (var s = new StringReader(testFile))
+            {
+                numCashier = int.Parse(s.ReadLine());
+                string custLine;
+                while ((custLine = s.ReadLine()) != null)
+                {
+                    Customer cust = CustomerFactory.CreateCustomer(custLine);
+                    if (cust != null) customers.Add(cust);
+                }
+            }
+
+            var store = new Store(numCashier);
+            return store.EnqueueCustomers(customers);
         }
 
     }
