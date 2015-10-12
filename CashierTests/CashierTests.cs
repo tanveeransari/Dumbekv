@@ -44,8 +44,8 @@ namespace CashierTests
             int lineLength = cashier.UpdateAndGetQueueLength(2);
             Assert.AreEqual(3, lineLength);
 
-            //lineLength = cashier.UpdateAndGetQueueLength(25);
-            //Assert.AreNotEqual(0, lineLength);
+            lineLength = cashier.UpdateAndGetQueueLength(25);
+            Assert.AreNotEqual(0, lineLength);
 
             lineLength = cashier.UpdateAndGetQueueLength(36);
             Assert.AreEqual(0, lineLength);

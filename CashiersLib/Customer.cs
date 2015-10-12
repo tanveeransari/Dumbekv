@@ -11,16 +11,19 @@ namespace CashiersLib
 
         private readonly int _id;
         private readonly int _arrivalTime;
-        private int _cartCountTimesTwo;
+        private int _workUnits;
+
+        private const int UNITS_OF_WORK_PER_CART_ITEM = 2;
 
         public Customer(int arrivalTime, int cartCount)
         {
             _id = Interlocked.Increment(ref _customerIdCounter);
             _arrivalTime = arrivalTime;
-            _cartCountTimesTwo = cartCount * 2;
+            // Divide each cart item into two work units - to avoid fractional work units
+            _workUnits = cartCount * UNITS_OF_WORK_PER_CART_ITEM;
         }
 
-        #region Properties
+
         public int ArrivalTime
         {
             get
@@ -29,21 +32,20 @@ namespace CashiersLib
             }
         }
 
-
         public int CartCount
         {
-            get { return _cartCountTimesTwo / 2; }
+            get { return _workUnits / UNITS_OF_WORK_PER_CART_ITEM; }
         }
 
-        public int CartCountTimesTwo
+        public int WorkUnits
         {
             get
             {
-                return _cartCountTimesTwo;
+                return _workUnits;
             }
             set
             {
-                _cartCountTimesTwo = value;
+                _workUnits = value;
             }
         }
 
@@ -59,7 +61,7 @@ namespace CashiersLib
                 return _id;
             }
         }
-        #endregion
+
 
         public abstract ICashier ChooseCashier(ISet<ICashier> cashiers);
 

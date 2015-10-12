@@ -3,13 +3,15 @@ using System.Collections.Generic;
 
 namespace CashiersLib
 {
-    public interface ICashier : IComparable<ICashier>,IComparer<ICashier>
+    public interface ICashier : IComparable<ICashier>, IComparer<ICashier>
     {
         int Id { get; }
-        //bool IsTrainee { get; }
-        
-        // returns New Completion Time 
+
+        // returns New Completion Time beginning from this customer's arrival time 
         int EnqueueCustomer(Customer customer);
+
+        int RateOfWork { get; }
+
         int UpdateAndGetQueueLength(int minute);
 
         int GetLastCustomerCartCount();

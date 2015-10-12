@@ -10,19 +10,18 @@ namespace CashiersLib
 {
     public class Cashier : ICashier
     {
-        private readonly int _id;
 
-        protected readonly LinkedList<Customer> _customersToServe;
-        protected int _numCustomers = 0;
-        protected int _itemsPerMinute = 2;
-        protected int _lastArrivalMinute = 0;
+        private readonly int _id;
+        private readonly LinkedList<Customer> _customersToServe;
+        private int _numCustomers = 0;
+        private int _lastArrivalMinute = 0;
 
         public Cashier(int id)
         {
             _id = id;
             _customersToServe = new LinkedList<Customer>();
+            RateOfWork = 2;
         }
-
 
         public int Id
         {
@@ -32,6 +31,8 @@ namespace CashiersLib
             }
         }
 
+        public int RateOfWork { get; protected set; }
+
         //Returns new completion time
         public int EnqueueCustomer(Customer customer)
         {
@@ -39,37 +40,37 @@ namespace CashiersLib
             _numCustomers++;
             if (customer.ArrivalTime != _lastArrivalMinute)
             {
-                MoveTimeForward(customer.ArrivalTime - _lastArrivalMinute);
+                MoveClockForward(customer.ArrivalTime - _lastArrivalMinute);
             }
 
             return CalculateCurrentCompletionTime(customer.ArrivalTime);
         }
 
-        protected virtual void MoveTimeForward(int numMinutes)
+        private void MoveClockForward(int numMinutes)
         {
             int remainingMinutes = numMinutes;
             while (_customersToServe.First != null)
             {
                 var cust = _customersToServe.First.Value;
-                if (cust.CartCountTimesTwo <= _itemsPerMinute * remainingMinutes)
+                if (cust.WorkUnits <= RateOfWork * remainingMinutes)
                 {
                     //customers whose items are done have to be removed
                     _customersToServe.RemoveFirst();
-                    Debug.Assert(cust.CartCountTimesTwo % 2 == 0, "MoveTimeForward rounding error inevitable");
-                    remainingMinutes -= cust.CartCountTimesTwo/_itemsPerMinute;
+                    remainingMinutes -= cust.WorkUnits / RateOfWork;
                     _numCustomers--;
                 }
                 else
                 {
-                    //customers in process have some items removed and some left
-                    cust.CartCountTimesTwo-= _itemsPerMinute *  remainingMinutes;
-                    remainingMinutes -= cust.CartCountTimesTwo/_itemsPerMinute;
-                    //Debug.Assert(remainingMinutes <= 0, "Remaining minutes are still left !");
+                    //customers partially processed have some items remaining
+                    int workDoneInRemainingMinutes = RateOfWork * remainingMinutes;
+                    remainingMinutes -= cust.WorkUnits / RateOfWork;
+                    cust.WorkUnits -= workDoneInRemainingMinutes;
                     if (remainingMinutes > 0)
                     {
                         Debugger.Break();
                     }
-                    //Ignore remaining customers
+
+                    Debug.Assert(remainingMinutes <= 0, "Remaining minutes are still left !");
                     break;
                 }
                 Debug.WriteLine("Remaining minutes {0}", remainingMinutes);
@@ -79,12 +80,12 @@ namespace CashiersLib
             _lastArrivalMinute += numMinutes;
         }
 
-        protected virtual int CalculateCurrentCompletionTime(int currentTime)
+        private int CalculateCurrentCompletionTime(int currentTime)
         {
             int remainingTime = 0;
             foreach (Customer customer in _customersToServe)
             {
-                remainingTime += customer.CartCountTimesTwo/_itemsPerMinute;
+                remainingTime += customer.WorkUnits / RateOfWork;
             }
 
             return remainingTime;
@@ -94,11 +95,11 @@ namespace CashiersLib
         {
             if (minute > _lastArrivalMinute)
             {
-                MoveTimeForward(minute - _lastArrivalMinute);
+                MoveClockForward(minute - _lastArrivalMinute);
             }
             else if (minute < _lastArrivalMinute) throw new Exception("Moving time backwards in UpdateAndGetQueueLength!");
 
-            return GetLineLength();         
+            return GetLineLength();
         }
 
         private int GetLineLength()
@@ -127,7 +128,7 @@ namespace CashiersLib
 
         public override string ToString()
         {
-            return string.Format("{0} Rate:{1} Customers:{2} LastArrival:{3}", _id, _itemsPerMinute, _numCustomers, _lastArrivalMinute);
+            return string.Format("{0} Customers:{1} LastArrival:{2}", _id, _numCustomers, _lastArrivalMinute);
         }
     }
 }
