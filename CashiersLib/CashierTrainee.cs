@@ -1,13 +1,10 @@
-﻿using System;
-using System.Diagnostics;
-
-namespace CashiersLib
+﻿namespace CashiersLib
 {
-    public class CashierTrainee:Cashier
+    public class CashierTrainee : Cashier
     {
-        public CashierTrainee(int id):base(id)
+        public CashierTrainee(int id) : base(id)
         {
-            RateOfWork = 1;   
+            RateOfWork = 1;
         }
     }
 }

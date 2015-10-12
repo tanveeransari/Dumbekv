@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.IO;
-using System.Text;
-using System.Threading.Tasks;
 using CashiersLib;
 
 namespace Cashiers
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             if (args == null || args.Length < 1 || args[0] == null || args[0].Length == 0)
             {
@@ -24,8 +21,6 @@ namespace Cashiers
                 return;
             }
 
-            int numCashiers;
-            string custLine;
             List<Customer> customerList = new List<Customer>();
             try
             {
@@ -35,8 +30,10 @@ namespace Cashiers
                     {
                         string lineOne = strRdr.ReadLine();
                         if (string.IsNullOrEmpty(lineOne)) return;
+                        int numCashiers;
                         if (!int.TryParse(lineOne, out numCashiers)) return;
 
+                        string custLine;
                         while ((custLine = strRdr.ReadLine()) != null)
                         {
                             Customer cust = CustomerFactory.CreateCustomer(custLine);
@@ -45,7 +42,7 @@ namespace Cashiers
 
                         var store = new Store(numCashiers);
                         int finishTime = store.EnqueueCustomers(customerList);
-                        Console.WriteLine("Finished at: t={0} minutes",finishTime);
+                        Console.WriteLine("Finished at: t={0} minutes", finishTime);
                     }
                 }
             }
@@ -54,7 +51,6 @@ namespace Cashiers
                 Console.WriteLine("Error reading {0} : {1} {2} {3}", args[0],
                     ex.Message, Environment.NewLine + "StackTrace:", ex.StackTrace);
             }
-
         }
     }
 }

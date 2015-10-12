@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 namespace CashiersLib
@@ -7,9 +6,13 @@ namespace CashiersLib
     {
         public CustomerB(int arrivalTime, int cartCount)
             : base(arrivalTime, cartCount)
-        { }
+        {
+        }
 
-        public override CustomerType CustomerType { get { return CustomerType.B; } }
+        public override CustomerType CustomerType
+        {
+            get { return CustomerType.B; }
+        }
 
         public override ICashier ChooseCashier(ISet<ICashier> cashiers)
         {

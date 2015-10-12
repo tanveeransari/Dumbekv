@@ -2,11 +2,12 @@
 {
     public static class CustomerFactory
     {
-        private static readonly char[] splitChars = { ' ' };
+        private static readonly char[] SplitChars = {' '};
+
         public static Customer CreateCustomer(string customerLine)
         {
             if (string.IsNullOrWhiteSpace(customerLine)) return null;
-            string[] tokens = customerLine.Split(splitChars);
+            string[] tokens = customerLine.Split(SplitChars);
             if (tokens.Length < 3) return null;
             int arrivalTime;
             if (!int.TryParse(tokens[1], out arrivalTime)) return null;
@@ -23,7 +24,7 @@
                 customer = new CustomerB(arrivalTime, cartCount);
             }
             else return null;
-            
+
             return customer;
         }
     }

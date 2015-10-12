@@ -1,65 +1,50 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 
 namespace CashiersLib
 {
     public abstract class Customer : ICustomer
     {
-        private static int _customerIdCounter = 0;
-
-        private readonly int _id;
-        private readonly int _arrivalTime;
-        private int _workUnits;
-
         private const int UNITS_OF_WORK_PER_CART_ITEM = 2;
 
-        public Customer(int arrivalTime, int cartCount)
+        // maintain a count so we don't have to an O(N) operation to get queue length
+        private static int _customerIdCounter;
+
+        private readonly int _arrivalTime;
+        private readonly int _id;
+
+        private int _workUnits;
+
+        protected Customer(int arrivalTime, int cartCount)
         {
             _id = Interlocked.Increment(ref _customerIdCounter);
             _arrivalTime = arrivalTime;
-            // Divide each cart item into two work units - to avoid fractional work units
-            _workUnits = cartCount * UNITS_OF_WORK_PER_CART_ITEM;
+            // Divide each cart item into two work units - to avoid fractional work units for trainee
+            _workUnits = cartCount*UNITS_OF_WORK_PER_CART_ITEM;
+        }
+
+        public int WorkUnits
+        {
+            get { return _workUnits; }
+            set { _workUnits = value; }
         }
 
 
         public int ArrivalTime
         {
-            get
-            {
-                return _arrivalTime;
-            }
+            get { return _arrivalTime; }
         }
 
         public int CartCount
         {
-            get { return _workUnits / UNITS_OF_WORK_PER_CART_ITEM; }
+            get { return _workUnits/UNITS_OF_WORK_PER_CART_ITEM; }
         }
 
-        public int WorkUnits
-        {
-            get
-            {
-                return _workUnits;
-            }
-            set
-            {
-                _workUnits = value;
-            }
-        }
-
-        public abstract CustomerType CustomerType
-        {
-            get;
-        }
+        public abstract CustomerType CustomerType { get; }
 
         public int Id
         {
-            get
-            {
-                return _id;
-            }
+            get { return _id; }
         }
 
 

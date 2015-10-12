@@ -7,11 +7,16 @@ namespace CashiersLib
     {
         public CustomerA(int arrivalTime, int cartCount)
             : base(arrivalTime, cartCount)
-        { }
-        public override CustomerType CustomerType { get { return CustomerType.A; } }
+        {
+        }
+
+        public override CustomerType CustomerType
+        {
+            get { return CustomerType.A; }
+        }
 
         public override ICashier ChooseCashier(ISet<ICashier> cashiers)
-        {  
+        {
             if (cashiers == null || cashiers.Count == 0) return null;
             ICashier selectedCashier = null;
             int minLineLength = int.MaxValue;

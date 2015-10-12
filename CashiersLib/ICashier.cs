@@ -7,10 +7,9 @@ namespace CashiersLib
     {
         int Id { get; }
 
-        // returns New Completion Time beginning from this customer's arrival time 
-        int EnqueueCustomer(Customer customer);
-
         int RateOfWork { get; }
+
+        int EnqueueCustomer(Customer customer);
 
         int CalculateQueueLength(int minute);
 

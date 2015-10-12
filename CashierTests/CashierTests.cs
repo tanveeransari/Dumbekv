@@ -1,9 +1,5 @@
-﻿using System;
-using CashiersLib;
-using System.Linq;
-using System.Diagnostics;
+﻿using CashiersLib;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Collections.Generic;
 
 namespace CashierTests
 {
@@ -54,8 +50,5 @@ namespace CashierTests
             lineLength = cashier.CalculateQueueLength(36);
             Assert.AreEqual(0, lineLength);
         }
-
-
-
     }
 }

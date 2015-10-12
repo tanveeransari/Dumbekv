@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace CashiersLib
 {
     public class Cashier : ICashier
     {
-        private readonly int _id;
         private readonly LinkedList<Customer> _customersToServe;
-        private int _numCustomers = 0;
-        private int _lastCalculationTime = 0;
+        private readonly int _id;
+        private int _lastCalculationTime;
+        private int _numCustomers;
 
         public Cashier(int id)
         {
@@ -20,19 +21,22 @@ namespace CashiersLib
 
         public int Id
         {
-            get
-            {
-                return _id;
-            }
+            get { return _id; }
         }
 
+        /// <summary>
+        /// Number of work items processed per minute. Each cart item is currently two work items.
+        /// This field will be 2 for normal cashiers and 1 for trainee
+        /// </summary>
         public int RateOfWork { get; protected set; }
 
-        //Returns new completion time
+        /// <summary>
+        /// Enqueues customer in Cashier's queue
+        /// </summary>
+        /// <param name="customer">Customer to wait in Cashier Queue</param>
+        /// <returns>Processing time remaining from time of customer arrival</returns>
         public int EnqueueCustomer(Customer customer)
         {
-            //_customersToServe.AddLast(customer);
-            //_numCustomers++;
             if (customer.ArrivalTime != _lastCalculationTime)
             {
                 MoveClockForward(customer.ArrivalTime - _lastCalculationTime);
@@ -40,26 +44,50 @@ namespace CashiersLib
             _customersToServe.AddLast(customer);
             _numCustomers++;
 
-            return CalculateCurrentCompletionTime(customer.ArrivalTime);
+            return CalculateCurrentCompletionTime();
         }
 
+        public int CalculateQueueLength(int minute)
+        {
+            if (minute > _lastCalculationTime)
+            {
+                MoveClockForward(minute - _lastCalculationTime);
+            }
+            else if (minute < _lastCalculationTime)
+            {
+                throw new InvalidOperationException("Cannot move time backwards in CalculateQueueLength!");
+            }
+
+            return GetLineLength();
+        }
+
+        public int GetLastCustomerCartCount()
+        {
+            if (_customersToServe.Count == 0) return 0;
+            return _customersToServe.Last.Value.CartCount;
+        }
+
+        /// <summary>
+        /// Do cart items processing for specified number of minutes
+        /// </summary>
+        /// <param name="numMinutes">How many minutes to work for</param>
         private void MoveClockForward(int numMinutes)
         {
             int remainingMinutes = numMinutes;
             while (_customersToServe.First != null)
             {
                 var cust = _customersToServe.First.Value;
-                if (cust.WorkUnits <= RateOfWork * remainingMinutes)
+                if (cust.WorkUnits <= RateOfWork*remainingMinutes)
                 {
-                    //customers whose items are done have to be removed
+                    // customers whose items are done have to be removed from queue
                     _customersToServe.RemoveFirst();
-                    remainingMinutes -= cust.WorkUnits / RateOfWork;
+                    remainingMinutes -= cust.WorkUnits/RateOfWork;
                     _numCustomers--;
                 }
                 else
                 {
                     //customers partially processed have some items remaining
-                    int workDoneInRemainingMinutes = RateOfWork * remainingMinutes;
+                    int workDoneInRemainingMinutes = RateOfWork*remainingMinutes;
                     Debug.Assert(workDoneInRemainingMinutes <= cust.WorkUnits, "Processing more items than exist in cart!");
                     remainingMinutes = 0;
                     cust.WorkUnits -= workDoneInRemainingMinutes;
@@ -71,29 +99,9 @@ namespace CashiersLib
             _lastCalculationTime += numMinutes;
         }
 
-        private int CalculateCurrentCompletionTime(int currentTime)
+        private int CalculateCurrentCompletionTime()
         {
-            int remainingTime = 0;
-            foreach (Customer customer in _customersToServe)
-            {
-                remainingTime += customer.WorkUnits / RateOfWork;
-            }
-
-            return remainingTime;
-        }
-
-        public int CalculateQueueLength(int minute)
-        {
-            if (minute > _lastCalculationTime)
-            {
-                MoveClockForward(minute - _lastCalculationTime);
-            }
-            else if (minute < _lastCalculationTime)
-            {
-                throw new InvalidOperationException("Cannot move time backwards in UpdateAndGetQueueLength!");
-            }
-
-            return GetLineLength();
+            return _customersToServe.Sum(customer => customer.WorkUnits/RateOfWork);
         }
 
         private int GetLineLength()
@@ -101,13 +109,11 @@ namespace CashiersLib
             return _numCustomers;
         }
 
-        public int GetLastCustomerCartCount()
+        public override string ToString()
         {
-            if (_customersToServe.Count == 0) return 0;
-            return _customersToServe.Last.Value.CartCount;
+            return string.Format("ID:{0} Customers:{1} LastArrival:{2}", _id, _numCustomers, _lastCalculationTime);
         }
 
-        #region IComparable, IComparer
         //sorts by queue/cashier id
         public int CompareTo(ICashier other)
         {
@@ -117,12 +123,6 @@ namespace CashiersLib
         public int Compare(ICashier x, ICashier y)
         {
             return x.Id.CompareTo(y.Id);
-        }
-        #endregion
-
-        public override string ToString()
-        {
-            return string.Format("ID:{0} Customers:{1} LastArrival:{2}", _id, _numCustomers, _lastCalculationTime);
         }
     }
 }

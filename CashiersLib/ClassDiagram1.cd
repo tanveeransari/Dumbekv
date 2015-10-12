@@ -9,14 +9,14 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <NestedTypes>
-      <Class Name="CashiersLib.Store.CashierIDGenerator" Collapsed="true">
+      <Class Name="CashiersLib.Store.CashierIdGenerator" Collapsed="true">
         <TypeIdentifier>
           <NewMemberFileName>Store.cs</NewMemberFileName>
         </TypeIdentifier>
       </Class>
     </NestedTypes>
     <TypeIdentifier>
-      <HashCode>AEAAAAAAAABAAAAAAAAAQAAAAAAAAgAAAAEAAQAAAAA=</HashCode>
+      <HashCode>AEAAAAAAAABAAAAEAAAAQAAAAAAAAgAAAAEAAQAAAAA=</HashCode>
       <FileName>Store.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />

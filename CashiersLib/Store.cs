@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 
 namespace CashiersLib
 {
@@ -10,68 +8,65 @@ namespace CashiersLib
     {
         private readonly SortedSet<ICashier> _cashiers;
 
-        private int _maxProcessingTimeFromStart;  //The answer to the big question
+        private int _maxProcessingTimeFromStart; //The answer to the big question
 
-        private int _currentClockTime = 0;      // what minute are we in
         public Store(int cashierCount)
         {
             Debug.Assert(cashierCount > 0, "Invalid number of cashiers specified. Must be greater than zero");
-            CashierIDGenerator.Reset();
+            CashierIdGenerator.Reset();
             _cashiers = new SortedSet<ICashier>();
             for (int i = 0; i < cashierCount - 1; i++)
             {
-                _cashiers.Add(new Cashier(CashierIDGenerator.NextCashierID));
+                _cashiers.Add(new Cashier(CashierIdGenerator.NextCashierId));
             }
-            _cashiers.Add(new CashierTrainee(CashierIDGenerator.NextCashierID));
+            _cashiers.Add(new CashierTrainee(CashierIdGenerator.NextCashierId));
         }
 
-        public ISet<ICashier> Cashiers
-        {
-            get { return _cashiers; }
-        }
-
-        //returns time all customers are done processing
+        /// <summary>
+        /// Main worker function
+        /// </summary>
+        /// <param name="custList">List of customers</param>
+        /// <returns>Time at which last customer processing completes</returns>
         public int EnqueueCustomers(List<Customer> custList)
         {
             if (custList == null || custList.Count == 0) return 0;
 
-            int minuteIter = 0;
-            var custByMinute = new List<Customer>();//new SortedSet<Customer>;
+            int arrivalTimeIter = 0;
+            var custByMinute = new List<Customer>();
 
             var customers = custList.OrderBy(x => x.ArrivalTime).ToList();
+
+            // Could do next block and above line with LINQ in one statement - but lets do this longer version for readability
             foreach (var customer in customers)
             {
-                if (customer.ArrivalTime == minuteIter)
+                if (customer.ArrivalTime == arrivalTimeIter)
                 {
                     custByMinute.Add(customer);
                 }
                 else
                 {
-                    if (custByMinute.Count > 0)
-                    {
-                        //Customer Sort handles customer arbitration for arrivals in the same minute
-                        custByMinute.ForEach(x => EnqueueCustomer(x));
-                        //foreach (var c in custByMinute)
-                        //{
-                        //    EnqueueCustomer(c);
-                        //}
-                        custByMinute.Clear();
-                    }
+                    EnqueueCustomersArrivingInTheSameMinute(custByMinute);
 
                     custByMinute.Add(customer);
-                    minuteIter = customer.ArrivalTime;
+                    arrivalTimeIter = customer.ArrivalTime;
                 }
-                _currentClockTime = customer.ArrivalTime;
             }
 
-            //Handle last minute customers
-            if (custByMinute.Count > 0)
-            {
-                custByMinute.Sort();
-                custByMinute.ForEach(x => EnqueueCustomer(x));
-            }
+            // Handle last minute customers
+            EnqueueCustomersArrivingInTheSameMinute(custByMinute);
 
             return _maxProcessingTimeFromStart;
+        }
+
+        private void EnqueueCustomersArrivingInTheSameMinute(List<Customer> custByMinute)
+        {
+            if (custByMinute.Any())
+            {
+                // Customer Sort handles customer arbitration for arrivals in the same minute
+                custByMinute.Sort();
+                custByMinute.ForEach(x => EnqueueCustomer(x));
+                custByMinute.Clear();
+            }
         }
 
         private bool EnqueueCustomer(Customer customer)
@@ -94,26 +89,24 @@ namespace CashiersLib
             return true;
         }
 
-        public override string ToString()
-        {
-            return string.Format("[Cashiers:{0}]  [Clock:{1}]  [MaxProcTime:{2}]",
-                Cashiers.Count, _currentClockTime, _maxProcessingTimeFromStart);
-        }
 
-        static class CashierIDGenerator
+        //public ISet<ICashier> Cashiers
+        //{
+        //    get { return _cashiers; }
+        //}
+
+        private static class CashierIdGenerator
         {
-            private static int _cashierIDCtr = 0;
-            internal static int NextCashierID
+            private static int _cashierIdCtr;
+
+            internal static int NextCashierId
             {
-                get
-                {
-                    return ++_cashierIDCtr;
-                }
+                get { return ++_cashierIdCtr; }
             }
 
             internal static void Reset()
             {
-                _cashierIDCtr = 0;
+                _cashierIdCtr = 0;
             }
         }
     }
