@@ -39,6 +39,28 @@ namespace CashierTests
         }
 
         [TestMethod]
+        public void TestAChoosingLowerNumberedLine()
+        {
+            var c1 = new Cashier(1);
+            c1.EnqueueCustomer(new CustomerA(1, 10));
+            c1.EnqueueCustomer(new CustomerB(2, 10));
+
+            var c2 = new Cashier(2);
+            c2.EnqueueCustomer(new CustomerB(1, 10));
+            c2.EnqueueCustomer(new CustomerB(2, 10));
+
+            var c3 = new CashierTrainee(3);
+            c3.EnqueueCustomer(new CustomerA(1, 10));
+            c3.EnqueueCustomer(new CustomerA(2, 10));
+
+            var cashiers = new HashSet<ICashier> { c1, c2, c3 };
+
+            var c = new CustomerA(3, 1);
+            var chosenCashier = c.ChooseCashier(cashiers);
+            Assert.AreEqual(c1, chosenCashier);
+        }
+
+        [TestMethod]
         public void TestBChoosingEmptyLine()
         {
             var c1 = new Cashier(1);

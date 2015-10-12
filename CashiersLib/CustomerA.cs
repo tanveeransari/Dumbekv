@@ -23,6 +23,13 @@ namespace CashiersLib
                     minLineLength = cashierLineLength;
                     selectedCashier = cashier;
                 }
+                else if (cashierLineLength == minLineLength)
+                {
+                    if (selectedCashier != null && selectedCashier.Id > cashier.Id)
+                    {
+                        selectedCashier = cashier;
+                    }
+                }
             }
 
             Debug.Assert(selectedCashier != null, "no cashier selected by A");
