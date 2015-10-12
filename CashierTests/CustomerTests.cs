@@ -15,6 +15,67 @@ namespace CashierTests
         }
 
         [TestMethod]
+        public void TestSortingByTime()
+        {
+            var cList = new List<Customer>
+            {
+                new CustomerA(10, 2),
+                new CustomerA(1, 22),
+                new CustomerB(5, 13)
+            };
+
+            cList.Sort();
+            Assert.AreEqual(22, cList.First().CartCount);
+            Assert.AreEqual(2, cList.Last().CartCount);
+        }
+
+        [TestMethod]
+        public void TestSortingByCartCount()
+        {
+            var custs = new List<Customer>
+            {
+                new CustomerB(5, 12),
+                new CustomerB(5, 1),
+                new CustomerA(5, 55),
+                new CustomerA(5, 7)
+            };
+
+            custs.Sort();
+            Assert.AreEqual(1, custs.First().CartCount);
+
+            Assert.AreEqual(55, custs.Last().CartCount);
+        }
+
+        [TestMethod]
+        public void TestSortingByType()
+        {
+            var custs = new List<Customer>
+            {
+                new CustomerB(5, 12),
+                new CustomerA(5, 12)
+            };
+
+            custs.Sort();
+
+            Assert.IsTrue(custs.First() is CustomerA);
+            Assert.IsTrue(custs.Last() is CustomerB);
+        }
+
+        [TestMethod]
+        public void TestNullCashiers()
+        {
+            var noCashiers = new HashSet<ICashier>();
+
+            var custA = new CustomerA(1, 10);
+            var chosenA = custA.ChooseCashier(noCashiers);
+            Assert.IsNull(chosenA);
+
+            var custB = new CustomerA(1, 10);
+            var chosenB = custB.ChooseCashier(noCashiers);
+            Assert.IsNull(chosenB);
+        }
+
+        [TestMethod]
         public void TestAChoosingShortestLine()
         {
             var c1 = new Cashier(1);
@@ -99,51 +160,5 @@ namespace CashierTests
             Assert.AreEqual(c1, chosenCashier);
         }
 
-        [TestMethod]
-        public void TestSortingByTime()
-        {
-            var cList = new List<Customer>
-            {
-                new CustomerA(10, 2),
-                new CustomerA(1, 22),
-                new CustomerB(5, 13)
-            };
-
-            cList.Sort();
-            Assert.AreEqual(22, cList.First().CartCount);
-            Assert.AreEqual(2, cList.Last().CartCount);
-        }
-
-        [TestMethod]
-        public void TestSortingByCartCount()
-        {
-            var custs = new List<Customer>
-            {
-                new CustomerB(5, 12),
-                new CustomerB(5, 1),
-                new CustomerA(5, 55),
-                new CustomerA(5, 7)
-            };
-
-            custs.Sort();
-            Assert.AreEqual(1, custs.First().CartCount);
-
-            Assert.AreEqual(55, custs.Last().CartCount);
-        }
-
-        [TestMethod]
-        public void TestSortingByType()
-        {
-            var custs = new List<Customer>
-            {
-                new CustomerB(5, 12),
-                new CustomerA(5, 12)
-            };
-
-            custs.Sort();
-
-            Assert.IsTrue(custs.First() is CustomerA);
-            Assert.IsTrue(custs.Last() is CustomerB);
-        }
     }
 }

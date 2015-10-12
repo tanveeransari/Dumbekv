@@ -10,6 +10,8 @@ namespace CashiersLib
         private readonly LinkedList<Customer> _customersToServe;
         private readonly int _id;
         private int _lastCalculationTime;
+        
+        // maintain a count so we can get queue length in O(1) instead of O(N)
         private int _numCustomers;
 
         public Cashier(int id)

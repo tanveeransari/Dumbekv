@@ -34,8 +34,8 @@ namespace CashierTests
         public void TestGetLineLength()
         {
             var cashier = new Cashier(0);
-            int time1 = cashier.EnqueueCustomer(new CustomerA(1, 10));
-            int time2 = cashier.EnqueueCustomer(new CustomerA(2, 5));
+            cashier.EnqueueCustomer(new CustomerA(1, 10));
+            cashier.EnqueueCustomer(new CustomerA(2, 5));
             int time3 = cashier.EnqueueCustomer(new CustomerB(2, 3));
             int completiontime = 2 + time3;
             Assert.AreEqual(19, completiontime);

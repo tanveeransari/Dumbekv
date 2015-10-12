@@ -11,7 +11,7 @@ namespace CashierTests
         [TestMethod]
         public void Test1()
         {
-            var inputText = @"1
+            const string inputText = @"1
 A 1 2
 A 2 1";
 
@@ -22,7 +22,7 @@ A 2 1";
         [TestMethod]
         public void Test2()
         {
-            var inputText = @"2
+            const string inputText = @"2
 A 1 5
 B 2 1
 A 3 5
@@ -35,7 +35,7 @@ A 8 2";
         [TestMethod]
         public void Test3()
         {
-            var inputText = @"2
+            const string inputText = @"2
 A 1 2
 A 1 2
 A 2 1
@@ -47,7 +47,7 @@ A 3 2";
         [TestMethod]
         public void Test4()
         {
-            var inputText = @"2
+            const string inputText = @"2
 A 1 2
 A 1 3
 A 2 1
@@ -59,7 +59,7 @@ A 2 1";
         [TestMethod]
         public void Test5()
         {
-            var inputText = @"2
+            const string inputText = @"2
 A 1 3
 A 1 5
 A 3 1
@@ -91,6 +91,15 @@ A 4 1";
 
             var store = new Store(numCashier);
             return store.EnqueueCustomers(customers);
+        }
+
+        [TestMethod]
+        public void TestNoCustomers()
+        {
+
+            var store = new Store(4);
+            int completionTime = store.EnqueueCustomers(new List<Customer>());
+            Assert.AreEqual(0, completionTime);
         }
     }
 }

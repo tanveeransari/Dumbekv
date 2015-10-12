@@ -7,7 +7,6 @@ namespace CashiersLib
     {
         private const int UNITS_OF_WORK_PER_CART_ITEM = 2;
 
-        // maintain a count so we don't have to an O(N) operation to get queue length
         private static int _customerIdCounter;
 
         private readonly int _arrivalTime;
