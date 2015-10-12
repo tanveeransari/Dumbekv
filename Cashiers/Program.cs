@@ -44,7 +44,8 @@ namespace Cashiers
                         }
 
                         var store = new Store(numCashiers);
-                        Console.WriteLine(store.EnqueueCustomers(customerList));
+                        int finishTime = store.EnqueueCustomers(customerList);
+                        Console.WriteLine("Finished at: t={0} minutes",finishTime);
                     }
                 }
             }

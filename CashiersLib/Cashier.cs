@@ -60,7 +60,7 @@ namespace CashiersLib
                 {
                     //customers partially processed have some items remaining
                     int workDoneInRemainingMinutes = RateOfWork * remainingMinutes;
-                    Debug.Assert(workDoneInRemainingMinutes > cust.WorkUnits, "Processing more items than exist in cart!");
+                    Debug.Assert(workDoneInRemainingMinutes <= cust.WorkUnits, "Processing more items than exist in cart!");
                     remainingMinutes = 0;
                     cust.WorkUnits -= workDoneInRemainingMinutes;
                     Debug.Assert(remainingMinutes <= 0, "Remaining minutes are still left !");
