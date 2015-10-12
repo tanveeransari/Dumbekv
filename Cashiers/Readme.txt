@@ -1,16 +1,16 @@
 ﻿Projects in Solution
 =====================
 Cashiers -		Interface to command line input and output for CashiersLib
-CashiersLib -	this is where all the heavy lifting is done. Contains all the business logic. 
-CashierTests -	unit tests for CashiersLib 
+CashiersLib -	Has all the code except an entry point.
+CashierTests -	Unit tests for CashiersLib 
 
 Assumptions
 ==================
 Desirable attributes are readability/maintainability, object oriented design and testability. 
-I would have done this quite differently if performance was one of the objectives.
+I would have programmed this quite differently if performance was important.
 
-Thread-safety is assumed not to be required since all my file reading is not multithreaded.
-So synchronization, volatile, atomic operations which would have been used in a multithreaded scenario have 
-not been used delibarately. 
+Thread-safety is assumed not to be required. 
+No data or program synchronization has been done nor have atomic operations or locks been used. 
+These would be required in multiple places in the code if thread-safety was a requirement.
 
-Coding Style : naming class members with an underscore prefix is assumed okay, instead of using "this."
+Style : naming class members with an underscore prefix is assumed okay, instead of using "this."
