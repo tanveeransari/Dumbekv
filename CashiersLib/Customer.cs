@@ -11,13 +11,13 @@ namespace CashiersLib
 
         private readonly int _id;
         private readonly int _arrivalTime;
-        private int _cartCount;
+        private int _cartCountTimesTwo;
 
         public Customer(int arrivalTime, int cartCount)
         {
             _id = Interlocked.Increment(ref _customerIdCounter);
             _arrivalTime = arrivalTime;
-            _cartCount = cartCount;
+            _cartCountTimesTwo = cartCount * 2;
         }
 
         #region Properties
@@ -29,15 +29,21 @@ namespace CashiersLib
             }
         }
 
+
         public int CartCount
+        {
+            get { return _cartCountTimesTwo / 2; }
+        }
+
+        public int CartCountTimesTwo
         {
             get
             {
-                return _cartCount;
+                return _cartCountTimesTwo;
             }
             set
             {
-                _cartCount = value;
+                _cartCountTimesTwo = value;
             }
         }
 
@@ -55,21 +61,26 @@ namespace CashiersLib
         }
         #endregion
 
-        public abstract ICashier ChooseCashier(SortedSet<Cashier> cashiers);
+        public abstract ICashier ChooseCashier(ISet<ICashier> cashiers);
 
-        
         public int CompareTo(ICustomer other)
         {
             //those with fewer items choose registers before those with more, and if they have the same number of items then type A's choose before type B's.
             return Compare(this, other);
         }
 
-        
         public int Compare(ICustomer x, ICustomer y)
         {
+            if (x.ArrivalTime != y.ArrivalTime) return x.ArrivalTime.CompareTo(y.ArrivalTime);
             if (x.CartCount != y.CartCount) return x.CartCount.CompareTo(y.CartCount);
 
             return x.CustomerType.CompareTo(y.CustomerType);
+        }
+
+        public override string ToString()
+        {
+            return string.Format("{0}: Type {1} Time:{2} Cart:{3}",
+                _id, CustomerType, ArrivalTime, CartCount);
         }
     }
 }

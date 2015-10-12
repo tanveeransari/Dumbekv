@@ -4,8 +4,8 @@ namespace CashiersLib
 {
     public interface IStore
     {
-        ISet<Cashier> Cashiers { get; }
+        ISet<ICashier> Cashiers { get; }
 
-        int EnqueueCustomers(List<ICustomer> customers);
+        int EnqueueCustomers(List<Customer> customers);
     }
 }

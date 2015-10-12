@@ -9,7 +9,7 @@ namespace CashiersLib
         //bool IsTrainee { get; }
         
         // returns New Completion Time 
-        int EnqueueCustomer(ICustomer customer);
+        int EnqueueCustomer(Customer customer);
         int UpdateAndGetQueueLength(int minute);
 
         int GetLastCustomerCartCount();

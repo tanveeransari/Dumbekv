@@ -8,10 +8,11 @@ namespace CashiersLib
     public interface ICustomer:IComparable<ICustomer>, IComparer<ICustomer>
     {
         int ArrivalTime { get;}
-        int CartCount { get; set;}
+        //TODO: if going with the doubled solution change name to DoubleCartCount or something
+        int CartCount { get;}
         CustomerType CustomerType { get; }
         int Id { get;}
 
-        ICashier ChooseCashier(SortedSet<Cashier> cashiers);
+        ICashier ChooseCashier(ISet<ICashier> cashiers);
     }
 }

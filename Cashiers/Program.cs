@@ -26,7 +26,7 @@ namespace Cashiers
 
             int numCashiers;
             string custLine;
-            List<ICustomer> customerList = new List<ICustomer>();
+            List<Customer> customerList = new List<Customer>();
             try
             {
                 using (var fStream = File.OpenRead(args[0]))
@@ -39,7 +39,7 @@ namespace Cashiers
 
                         while ((custLine = strRdr.ReadLine()) != null)
                         {
-                            ICustomer cust = CustomerFactory.CreateCustomer(custLine);
+                            Customer cust = CustomerFactory.CreateCustomer(custLine);
                             if (cust != null) customerList.Add(cust);
                         }
 

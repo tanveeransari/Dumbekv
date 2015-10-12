@@ -10,10 +10,10 @@ namespace CashiersLib
         { }
         public override CustomerType CustomerType { get { return CustomerType.A; } }
 
-        public override ICashier ChooseCashier(SortedSet<Cashier> cashiers)
-        {
+        public override ICashier ChooseCashier(ISet<ICashier> cashiers)
+        {  
             if (cashiers == null || cashiers.Count == 0) return null;
-            Cashier selectedCashier = null;
+            ICashier selectedCashier = null;
             int minLineLength = int.MaxValue;
             foreach (var cashier in cashiers)
             {

@@ -8,13 +8,13 @@ namespace CashiersLib
 {
     public class Store : IStore
     {
-        private readonly SortedSet<Cashier> _cashiers;
+        private readonly SortedSet<ICashier> _cashiers;
         private int _latestCompletionTime;  //The answer to the big question
         private int _currentClockTime = 0;      // what minute are we in
         public Store(int cashierCount)
         {
             Debug.Assert(cashierCount > 0, "Invalid number of cashiers specified. Must be greater than zero");
-            _cashiers = new SortedSet<Cashier>();
+            _cashiers = new SortedSet<ICashier>();
             for (int i = 0; i < cashierCount - 1; i++)
             {
                 _cashiers.Add(new Cashier(i));
@@ -22,18 +22,18 @@ namespace CashiersLib
             _cashiers.Add(new CashierTrainee(cashierCount - 1));
         }
 
-        public ISet<Cashier> Cashiers
+        public ISet<ICashier> Cashiers
         {
             get { return _cashiers; }
         }
 
         //returns time all customers are done processing
-        public int EnqueueCustomers(List<ICustomer> custList)
+        public int EnqueueCustomers(List<Customer> custList)
         {
             if (custList == null || custList.Count == 0) return 0;
 
             int minuteIter = 0;
-            var custByMinute = new SortedSet<ICustomer>();
+            var custByMinute = new SortedSet<Customer>();
 
             var customers = custList.OrderBy(x => x.ArrivalTime).ToList();
             foreach (var customer in customers)
@@ -54,6 +54,7 @@ namespace CashiersLib
                     custByMinute.Add(customer);
                     minuteIter = customer.ArrivalTime;
                 }
+                _currentClockTime = customer.ArrivalTime;
             }
             
             //Handle last minute customers
@@ -68,7 +69,7 @@ namespace CashiersLib
             return _currentClockTime + _latestCompletionTime;
         }
 
-        private bool EnqueueCustomer(ICustomer customer)
+        private bool EnqueueCustomer(Customer customer)
         {
             ICashier selectedCashier = customer.ChooseCashier(_cashiers);
             if (selectedCashier == null) return false;

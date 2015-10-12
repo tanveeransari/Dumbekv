@@ -12,15 +12,15 @@ namespace CashiersLib
     {
         private readonly int _id;
 
-        protected readonly LinkedList<ICustomer> _customersToServe;
+        protected readonly LinkedList<Customer> _customersToServe;
         protected int _numCustomers = 0;
-
-        private int _lastArrivalMinute = 0;
+        protected int _itemsPerMinute = 2;
+        protected int _lastArrivalMinute = 0;
 
         public Cashier(int id)
         {
             _id = id;
-            _customersToServe = new LinkedList<ICustomer>();
+            _customersToServe = new LinkedList<Customer>();
         }
 
 
@@ -33,7 +33,7 @@ namespace CashiersLib
         }
 
         //Returns new completion time
-        public int EnqueueCustomer(ICustomer customer)
+        public int EnqueueCustomer(Customer customer)
         {
             _customersToServe.AddLast(customer);
             _numCustomers++;
@@ -51,23 +51,29 @@ namespace CashiersLib
             while (_customersToServe.First != null)
             {
                 var cust = _customersToServe.First.Value;
-                if (cust.CartCount < remainingMinutes)
+                if (cust.CartCountTimesTwo <= _itemsPerMinute * remainingMinutes)
                 {
                     //customers whose items are done have to be removed
-                    remainingMinutes -= cust.CartCount;
                     _customersToServe.RemoveFirst();
+                    Debug.Assert(cust.CartCountTimesTwo % 2 == 0, "MoveTimeForward rounding error inevitable");
+                    remainingMinutes -= cust.CartCountTimesTwo/_itemsPerMinute;
                     _numCustomers--;
                 }
                 else
                 {
                     //customers in process have some items removed and some left
-                    cust.CartCount -= remainingMinutes;
-                    remainingMinutes -= cust.CartCount;
-                    Debug.Assert(remainingMinutes == 0, "Remaining minutes are still left !");
+                    cust.CartCountTimesTwo-= _itemsPerMinute *  remainingMinutes;
+                    remainingMinutes -= cust.CartCountTimesTwo/_itemsPerMinute;
+                    //Debug.Assert(remainingMinutes <= 0, "Remaining minutes are still left !");
+                    if (remainingMinutes > 0)
+                    {
+                        Debugger.Break();
+                    }
                     //Ignore remaining customers
                     break;
                 }
-                Debug.Assert(remainingMinutes >= 0, "Remaining minutes went negative !");
+                Debug.WriteLine("Remaining minutes {0}", remainingMinutes);
+                //Debug.Assert(remainingMinutes >= 0, "Remaining minutes went negative !");
             }
 
             _lastArrivalMinute += numMinutes;
@@ -76,9 +82,9 @@ namespace CashiersLib
         protected virtual int CalculateCurrentCompletionTime(int currentTime)
         {
             int remainingTime = 0;
-            foreach (ICustomer customer in _customersToServe)
+            foreach (Customer customer in _customersToServe)
             {
-                remainingTime += customer.CartCount;
+                remainingTime += customer.CartCountTimesTwo/_itemsPerMinute;
             }
 
             return remainingTime;
@@ -118,5 +124,10 @@ namespace CashiersLib
             return x.Id.CompareTo(y.Id);
         }
         #endregion
+
+        public override string ToString()
+        {
+            return string.Format("{0} Rate:{1} Customers:{2} LastArrival:{3}", _id, _itemsPerMinute, _numCustomers, _lastArrivalMinute);
+        }
     }
 }

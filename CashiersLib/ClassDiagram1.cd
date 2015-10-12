@@ -18,16 +18,16 @@
     <Position X="3" Y="3.25" Width="2" />
     <Members>
       <Field Name="_arrivalTime" Hidden="true" />
-      <Field Name="_cartCount" Hidden="true" />
+      <Field Name="_cartCountTimesTwo" Hidden="true" />
       <Field Name="_customerIdCounter" Hidden="true" />
       <Field Name="_id" Hidden="true" />
       <Property Name="ArrivalTime" Hidden="true" />
-      <Property Name="CartCount" Hidden="true" />
+      <Property Name="CartCountTimesTwo" Hidden="true" />
       <Property Name="CustomerType" Hidden="true" />
       <Property Name="Id" Hidden="true" />
     </Members>
     <TypeIdentifier>
-      <HashCode>AgACAAAAAAgEAAQAAABAEAAUAAAAAAAAAABAAAAAABA=</HashCode>
+      <HashCode>AgACAAAAAAgEAAQEAABKEAAQAAAAAAAAAABAAAAAABA=</HashCode>
       <FileName>Customer.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -52,7 +52,7 @@
       <Property Name="Id" Hidden="true" />
     </Members>
     <TypeIdentifier>
-      <HashCode>AACCAAAAAABAAASAAABAEAAAAAAKAAQAAAgAAAEAAAA=</HashCode>
+      <HashCode>AAKCAAAAAABAAASEAEBAAAAAAAACABAAAAhAEAAQAAA=</HashCode>
       <FileName>Cashier.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -60,14 +60,14 @@
   <Class Name="CashiersLib.CashierTrainee">
     <Position X="8" Y="6.75" Width="2.75" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAgAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>CashierTrainee.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Interface Name="CashiersLib.ICashier">
     <Position X="6.5" Y="0.5" Width="2.75" />
     <TypeIdentifier>
-      <HashCode>AACCAAAAAABAAAAAAAAAAAAAAAAKAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAACAAAAAABAAAAAAEAAAAAAAAACAAAAAAAAAAAAAAA=</HashCode>
       <FileName>ICashier.cs</FileName>
     </TypeIdentifier>
   </Interface>
