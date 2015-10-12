@@ -9,7 +9,7 @@ namespace CashiersLib
         private readonly int _id;
         private readonly LinkedList<Customer> _customersToServe;
         private int _numCustomers = 0;
-        private int _lastArrivalMinute = 0;
+        private int _lastCalculationTime = 0;
 
         public Cashier(int id)
         {
@@ -31,12 +31,14 @@ namespace CashiersLib
         //Returns new completion time
         public int EnqueueCustomer(Customer customer)
         {
+            //_customersToServe.AddLast(customer);
+            //_numCustomers++;
+            if (customer.ArrivalTime != _lastCalculationTime)
+            {
+                MoveClockForward(customer.ArrivalTime - _lastCalculationTime);
+            }
             _customersToServe.AddLast(customer);
             _numCustomers++;
-            if (customer.ArrivalTime != _lastArrivalMinute)
-            {
-                MoveClockForward(customer.ArrivalTime - _lastArrivalMinute);
-            }
 
             return CalculateCurrentCompletionTime(customer.ArrivalTime);
         }
@@ -53,23 +55,20 @@ namespace CashiersLib
                     _customersToServe.RemoveFirst();
                     remainingMinutes -= cust.WorkUnits / RateOfWork;
                     _numCustomers--;
-                    Debug.WriteLine("Remaining minutes {0}", remainingMinutes);
                 }
                 else
                 {
                     //customers partially processed have some items remaining
                     int workDoneInRemainingMinutes = RateOfWork * remainingMinutes;
-                    //                    remainingMinutes -= cust.WorkUnits / RateOfWork;
+                    Debug.Assert(workDoneInRemainingMinutes > cust.WorkUnits, "Processing more items than exist in cart!");
                     remainingMinutes = 0;
                     cust.WorkUnits -= workDoneInRemainingMinutes;
                     Debug.Assert(remainingMinutes <= 0, "Remaining minutes are still left !");
-                    Debug.WriteLine("Remaining minutes {0}", remainingMinutes);
                     break;
                 }
-                //Debug.Assert(remainingMinutes >= 0, "Remaining minutes went negative !");
             }
 
-            _lastArrivalMinute += numMinutes;
+            _lastCalculationTime += numMinutes;
         }
 
         private int CalculateCurrentCompletionTime(int currentTime)
@@ -85,11 +84,11 @@ namespace CashiersLib
 
         public int CalculateQueueLength(int minute)
         {
-            if (minute > _lastArrivalMinute)
+            if (minute > _lastCalculationTime)
             {
-                MoveClockForward(minute - _lastArrivalMinute);
+                MoveClockForward(minute - _lastCalculationTime);
             }
-            else if (minute < _lastArrivalMinute)
+            else if (minute < _lastCalculationTime)
             {
                 throw new InvalidOperationException("Cannot move time backwards in UpdateAndGetQueueLength!");
             }
@@ -123,7 +122,7 @@ namespace CashiersLib
 
         public override string ToString()
         {
-            return string.Format("ID:{0} Customers:{1} LastArrival:{2}", _id, _numCustomers, _lastArrivalMinute);
+            return string.Format("ID:{0} Customers:{1} LastArrival:{2}", _id, _numCustomers, _lastCalculationTime);
         }
     }
 }

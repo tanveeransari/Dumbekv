@@ -12,73 +12,73 @@ namespace CashierTests
         [TestMethod]
         public void Test1()
         {
-            string testFile = @"1
+            string inputText = @"1
 A 1 2
 A 2 1";
 
-            int completionTime = processFile(testFile);
+            int completionTime = ProcessTextInput(inputText);
             Assert.AreEqual(7, completionTime);
         }
 
         [TestMethod]
         public void Test2()
         {
-            string testFile = @"2
+            string inputText = @"2
 A 1 5
 B 2 1
 A 3 5
 B 5 3
 A 8 2";
-            int completionTime = processFile(testFile);
+            int completionTime = ProcessTextInput(inputText);
             Assert.AreEqual(13, completionTime);
         }
 
         [TestMethod]
         public void Test3()
         {
-            string testFile = @"2
+            string inputText = @"2
 A 1 2
 A 1 2
 A 2 1
 A 3 2";
-            int completionTime = processFile(testFile);
+            int completionTime = ProcessTextInput(inputText);
             Assert.AreEqual(6, completionTime);
         }
 
         [TestMethod]
         public void Test4()
         {
-            string testFile = @"2
+            string inputText = @"2
 A 1 2
 A 1 3
 A 2 1
 A 2 1";
-            int completionTime = processFile(testFile);
+            int completionTime = ProcessTextInput(inputText);
             Assert.AreEqual(9, completionTime);
         }
 
         [TestMethod]
         public void Test5()
         {
-            string testFile = @"2
+            string inputText = @"2
 A 1 3
 A 1 5
 A 3 1
 B 4 1
 A 4 1";
-            int completionTime = processFile(testFile);
+            int completionTime = ProcessTextInput(inputText);
             Assert.AreEqual(11, completionTime);
         }
-        private int processFile(string testFile)
+        private int ProcessTextInput(string inputText)
         {
-            if (string.IsNullOrWhiteSpace(testFile))
+            if (string.IsNullOrWhiteSpace(inputText))
             {
                 return 0;
             }
 
             int numCashier;
             var customers = new List<Customer>();
-            using (var s = new StringReader(testFile))
+            using (var s = new StringReader(inputText))
             {
                 numCashier = int.Parse(s.ReadLine());
                 string custLine;

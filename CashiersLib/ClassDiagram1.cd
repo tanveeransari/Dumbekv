@@ -62,12 +62,11 @@
     <Members>
       <Field Name="_customersToServe" Hidden="true" />
       <Field Name="_id" Hidden="true" />
-      <Field Name="_lastArrivalMinute" Hidden="true" />
       <Field Name="_numCustomers" Hidden="true" />
       <Property Name="Id" Hidden="true" />
     </Members>
     <TypeIdentifier>
-      <HashCode>AAKCAAAAAABAACSEAABAAAAAAAACABAABABAEAAAAQA=</HashCode>
+      <HashCode>AAKCAAAAAABAACSEAABAAAgAAAACAAAABABAEAAAAQA=</HashCode>
       <FileName>Cashier.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />

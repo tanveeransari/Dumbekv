@@ -36,7 +36,7 @@ namespace CashiersLib
             if (custList == null || custList.Count == 0) return 0;
 
             int minuteIter = 0;
-            var custByMinute = new SortedSet<Customer>();
+            var custByMinute = new List<Customer>();//new SortedSet<Customer>;
 
             var customers = custList.OrderBy(x => x.ArrivalTime).ToList();
             foreach (var customer in customers)
@@ -47,12 +47,16 @@ namespace CashiersLib
                 }
                 else
                 {
-                    //Customer Sort handles customer arbitration for simultaneous arrivals
-                    foreach (var c in custByMinute)
+                    if (custByMinute.Count > 0)
                     {
-                        EnqueueCustomer(c);
+                        //Customer Sort handles customer arbitration for arrivals in the same minute
+                        custByMinute.ForEach(x => EnqueueCustomer(x));
+                        //foreach (var c in custByMinute)
+                        //{
+                        //    EnqueueCustomer(c);
+                        //}
+                        custByMinute.Clear();
                     }
-                    custByMinute.Clear();
 
                     custByMinute.Add(customer);
                     minuteIter = customer.ArrivalTime;
@@ -61,13 +65,11 @@ namespace CashiersLib
             }
 
             //Handle last minute customers
-            foreach (var c in custByMinute)
+            if (custByMinute.Count > 0)
             {
-                EnqueueCustomer(c);
+                custByMinute.Sort();
+                custByMinute.ForEach(x => EnqueueCustomer(x));
             }
-
-            Debug.WriteLine("Last customer arrived at {0} = currentClockTime. Latest Completion Time {1}",
-                _currentClockTime, _maxProcessingTimeFromStart);
 
             return _maxProcessingTimeFromStart;
         }
@@ -90,6 +92,12 @@ namespace CashiersLib
                 }
             }
             return true;
+        }
+
+        public override string ToString()
+        {
+            return string.Format("[Cashiers:{0}]  [Clock:{1}]  [MaxProcTime:{2}]",
+                Cashiers.Count, _currentClockTime, _maxProcessingTimeFromStart);
         }
 
         static class CashierIDGenerator
